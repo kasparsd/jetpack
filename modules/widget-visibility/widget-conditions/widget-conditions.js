@@ -133,8 +133,7 @@ jQuery( function( $ ) {
 	$( document ).on( 'change.widgetconditions', 'select.conditions-rule-major', function() {
 		var $conditionsRuleMajor = $ ( this ),
 			$conditionsRuleMinor = $conditionsRuleMajor.siblings( 'select.conditions-rule-minor:first' ),
-			$conditionsRuleHasChildren = $conditionsRuleMajor.siblings( 'span.conditions-rule-has-children' ),
-			$conditionsRuleAdditional = $conditionsRuleMajor.siblings( 'input.conditions-rule-additional:first' );
+			$conditionsRuleHasChildren = $conditionsRuleMajor.siblings( 'span.conditions-rule-has-children' );
 
 		if ( $conditionsRuleMajor.val() ) {
 			if ( $conditionsRuleMajor.val() !== 'page' ){
@@ -149,16 +148,7 @@ jQuery( function( $ ) {
 			};
 
 			jQuery.post( ajaxurl, data, function( html ) {
-				if( html.length > 0 ){
-					if( $conditionsRuleMinor.hasClass('hidden') ){
-						$conditionsRuleMinor.removeClass('hidden');
-						$conditionsRuleAdditional.addClass('hidden');
-					}
-					$conditionsRuleMinor.html( html ).removeAttr( 'disabled' );
-				}else{
-					$conditionsRuleMinor.addClass('hidden');
-					$conditionsRuleAdditional.removeClass('hidden');
-				}
+				$conditionsRuleMinor.html( html ).removeAttr( 'disabled' );
 			} );
 		} else {
 			$conditionsRuleMajor.siblings( 'select.conditions-rule-minor' ).attr( 'disabled', 'disabled' ).html( '' );
