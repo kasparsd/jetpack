@@ -34,20 +34,20 @@ class Jetpack_Widget_Conditions {
 
 	public static function condition_minor_visible( $rule ) {
 		/**
-		 * Filters the visibility of a minor rule.
+		 * Filters the visibility of a minor rule for the current rule.
 		 *
 		 * @since 4.7.0
 		 *
 		 * @module widget-visibility
 		 *
-		 * @param Boolean $is_visible if the current minor rule should be visible.
-		 * @param array $minor_rule.
+		 * @param Boolean $is_visible if the minor rule should be visible.
+		 * @param array $rule (
+		 *   'major' => Array,
+		 *   'minor' => Array,
+		 *   'has_children' => Boolean
+		 * ).
 		 */
-		$result = apply_filters( 'widget_visibility_minor_visible', true, $rule );
-
-		if( true != $result ) {
-			echo ' hidden';
-		}
+		return apply_filters( 'jetpack_widget_visibility_minor_visible', true, $rule );
 	}
 
 	/**
@@ -327,7 +327,7 @@ class Jetpack_Widget_Conditions {
 			 * @param array $args Widget Visibility initial condition array.
 			 */
 			$conditions['rules'][] = apply_filters(
-				'widget_visibility_conditions',
+				'jetpack_widget_visibility_conditions',
 				array( 'major' => '', 'minor' => '', 'has_children' => '' )
 			);
 
@@ -374,15 +374,47 @@ class Jetpack_Widget_Conditions {
 									 *
 									 * @module widget-visibility
 									 *
-									 * @param array $major_rule The major rule that is being output.
+									 * @param array $rule (
+									 *   'major' => Array,
+									 *   'minor' => Array,
+									 *   'has_children' => Boolean
+									 * ).
 									 */
-									do_action('widget_visibility_condition_major', $rule );
+									do_action('jetpack_widget_visibility_condition_major', $rule );
 									?>
 								</select>
 
-								<?php _ex( 'is', 'Widget Visibility: {Rule Major [Page]} is {Rule Minor [Search results]}', 'jetpack' ); ?>
+								<?php
+								/**
+								 * Filters the minor rule visibility. Return false to hide
+								 * the minor rule for the current rule.
+								 *
+								 * @since 4.7.0
+								 *
+								 * @module widget-visibility
+								 *
+								 * @param array $rule (
+								 *   'major' => Array,
+								 *   'minor' => Array,
+								 *   'has_children' => Boolean
+								 * ).
+								 */
+								$show_minor_rule = self::condition_minor_visible( $rule );
+								?>
 
-								<select class="conditions-rule-minor<?php self::condition_minor_visible( $rule ); ?>" name="conditions[rules_minor][]" <?php if ( ! $rule['major'] ) { ?> disabled="disabled"<?php } ?> data-loading-text="<?php esc_attr_e( 'Loading...', 'jetpack' ); ?>">
+								<?php if ( $show_minor_rule ) {
+									_ex( 'is', 'Widget Visibility: {Rule Major [Page]} is {Rule Minor [Search results]}', 'jetpack' );
+								} ?>
+
+								<select
+									class="conditions-rule-minor <?php
+										echo $show_minor_rule ? '' : 'hidden'
+									?>"
+									name="conditions[rules_minor][]"
+									<?php if ( ! $rule['major'] ) { ?>
+										disabled="disabled"
+									<?php } ?>
+									data-loading-text="<?php esc_attr_e( 'Loading...', 'jetpack' ); ?>">
 									<?php self::widget_conditions_options_echo( $rule['major'], $rule['minor'] ); ?>
 								</select>
 								<?php
@@ -394,9 +426,13 @@ class Jetpack_Widget_Conditions {
 								 *
 								 * @module widget-visibility
 								 *
-								 * @param array $major_rule The major rule that is being output.
+								 * @param array $rule (
+								 *   'major' => Array,
+								 *   'minor' => Array,
+								 *   'has_children' => Boolean
+								 * ).
 								 */
-								do_action( 'widget_visibility_additional_fields', $rule );
+								do_action( 'jetpack_widget_visibility_additional_fields', $rule );
 								?>
 								<span class="conditions-rule-has-children">
 									<?php self::widget_conditions_has_children_echo( $rule['major'], $rule['minor'], $rule['has_children'] ); ?>
@@ -464,7 +500,7 @@ class Jetpack_Widget_Conditions {
 			 */
 
 			$conditions['rules'][] = apply_filters(
-				'widget_conditions_defaults',
+				'jetpack_widget_visibility_conditions_defaults',
 				$defaults,
 				$index
 			);
@@ -764,10 +800,14 @@ class Jetpack_Widget_Conditions {
 			 * @module widget-visibility
 			 *
 			 * @param boolean $result The current rule result.
-			 * @param array $rule.
+			 * @param array $rule (
+			 *   'major' => Array,
+			 *   'minor' => Array,
+			 *   'has_children' => Boolean
+			 * ).
 			 */
 			$condition_result = apply_filters(
-				'widget_visibility_filter_widget',
+				'jetpack_widget_visibility_condition_result',
 				$condition_result,
 				$rule
 			);
