@@ -364,8 +364,20 @@ class Jetpack_Widget_Conditions {
 									<option value="post_type" <?php selected( "post_type", $rule['major'] ); ?>><?php echo esc_html_x( 'Post Type', 'Example: the user is viewing a custom post type archive.', 'jetpack' ); ?></option>
 									<?php if ( get_taxonomies( array( '_builtin' => false ) ) ) : ?>
 										<option value="taxonomy" <?php selected( "taxonomy", $rule['major'] ); ?>><?php echo esc_html_x( 'Taxonomy', 'Noun, as in: "This post has one taxonomy."', 'jetpack' ); ?></option>
-									<?php do_action('widget_visibility_condition_major', $rule ); ?>
 									<?php endif; ?>
+									<?php
+									/**
+									 * Triggered when the output of available major rule options is over.
+									 * Can be used to add new options for major rules.
+									 *
+									 * @since 4.7.0
+									 *
+									 * @module widget-visibility
+									 *
+									 * @param array $major_rule The major rule that is being output.
+									 */
+									do_action('widget_visibility_condition_major', $rule );
+									?>
 								</select>
 
 								<?php _ex( 'is', 'Widget Visibility: {Rule Major [Page]} is {Rule Minor [Search results]}', 'jetpack' ); ?>
@@ -373,7 +385,19 @@ class Jetpack_Widget_Conditions {
 								<select class="conditions-rule-minor<?php self::condition_minor_visible( $rule ); ?>" name="conditions[rules_minor][]" <?php if ( ! $rule['major'] ) { ?> disabled="disabled"<?php } ?> data-loading-text="<?php esc_attr_e( 'Loading...', 'jetpack' ); ?>">
 									<?php self::widget_conditions_options_echo( $rule['major'], $rule['minor'] ); ?>
 								</select>
-								<?php do_action( 'widget_visibility_additional_fields', $rule ); ?>
+								<?php
+								/**
+								 * Triggered on the end of a major rule output.
+								 * Can be used to add additional fields to the rule.
+								 *
+								 * @since 4.7.0
+								 *
+								 * @module widget-visibility
+								 *
+								 * @param array $major_rule The major rule that is being output.
+								 */
+								do_action( 'widget_visibility_additional_fields', $rule );
+								?>
 								<span class="conditions-rule-has-children">
 									<?php self::widget_conditions_has_children_echo( $rule['major'], $rule['minor'], $rule['has_children'] ); ?>
 								</span>
