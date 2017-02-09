@@ -33,6 +33,16 @@ class Jetpack_Widget_Conditions {
 	}
 
 	public static function condition_minor_visible( $rule ) {
+		/**
+		 * Filters the visibility of a minor rule.
+		 *
+		 * @since 4.7.0
+		 *
+		 * @module widget-visibility
+		 *
+		 * @param Boolean $is_visible if the current minor rule should be visible.
+		 * @param array $minor_rule.
+		 */
 		$result = apply_filters( 'widget_visibility_minor_visible', true, $rule );
 
 		if( true != $result ) {
@@ -307,7 +317,19 @@ class Jetpack_Widget_Conditions {
 			$conditions['action'] = 'show';
 
 		if ( empty( $conditions['rules'] ) )
-			$conditions['rules'][] = apply_filters( 'widget_visibility_conditions', array( 'major' => '', 'minor' => '', 'has_children' => '' ) );
+			/**
+			 * Filters initial widget visibility conditions.
+			 *
+			 * @since 4.7.0
+			 *
+			 * @module widget-visibility
+			 *
+			 * @param array $args Widget Visibility initial condition array.
+			 */
+			$conditions['rules'][] = apply_filters(
+				'widget_visibility_conditions',
+				array( 'major' => '', 'minor' => '', 'has_children' => '' )
+			);
 
 		?>
 		<div class="widget-conditional <?php if ( empty( $_POST['widget-conditions-visible'] ) || $_POST['widget-conditions-visible'] == '0' ) { ?>widget-conditional-hide<?php } ?>">
@@ -401,7 +423,27 @@ class Jetpack_Widget_Conditions {
 				'has_children' => isset( $_POST['conditions']['page_children'][$index] ) ? true : false,
 			);
 
-			$conditions['rules'][] = apply_filters( 'widget_conditions_defaults', $defaults, $index );
+			/**
+			 * Filters default widget visibility conditions. This filter will be passed
+			 * an array of conditions for every major rule with default values set.
+			 *
+			 * @since 4.7.0
+			 *
+			 * @module widget-visibility
+			 *
+			 * @param array $defaults [
+			 *   'major' => Array,
+			 *   'minor' => Array,
+			 *   'has_children' => Boolean
+			 * ].
+			 * @param int $index the rule index
+			 */
+
+			$conditions['rules'][] = apply_filters(
+				'widget_conditions_defaults',
+				$defaults,
+				$index
+			);
 		}
 
 		if ( ! empty( $conditions['rules'] ) )
@@ -690,7 +732,24 @@ class Jetpack_Widget_Conditions {
 				}
 			}
 
-			$condition_result = apply_filters( 'widget_visibility_filter_widget', $condition_result, $rule );
+			/**
+			 * Filters the condition result based on the current rule.
+			 *
+			 * @since 4.7.0
+			 *
+			 * @module widget-visibility
+			 *
+			 * @param boolean $result The current rule result.
+			 * @param array $rule.
+			 */
+			$condition_result = apply_filters(
+				'widget_visibility_filter_widget',
+				$condition_result,
+				$rule
+			);
+
+			if ( $condition_result )
+				break;
 		}
 
 		if ( ( 'show' == $instance['conditions']['action'] && ! $condition_result ) || ( 'hide' == $instance['conditions']['action'] && $condition_result ) )
