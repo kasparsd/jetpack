@@ -26,31 +26,20 @@ import Banner from 'components/banner';
 import Button from 'components/button';
 
 export const SettingsCard = props => {
-	let module = props.module
-			? props.getModule( props.module )
-			: false,
-		header = props.header
-			? props.header
-			: '',
-		isSaving = props.isSavingAnyOption(),
-		feature = props.feature
-			? props.feature
-			: false,
-		siteRawUrl = props.siteRawUrl;
+	let header = props.header;
 
-	if ( '' === header && module ) {
-		header = module.name;
-	}
+	const isSaving = props.isSavingAnyOption();
 
-	let getBanner = ( feature ) => {
-		let planClass = getPlanClass( props.sitePlan.product_slug );
+	const getBanner = ( feature, siteRawUrl ) => {
+		const planClass = getPlanClass( props.sitePlan.product_slug ),
+			commonProps = {
+				feature: feature,
+				href: 'https://jetpack.com/redirect/?source=plans-compare-personal&site=' + siteRawUrl
+			};
+
 		let list;
-		let commonProps = {
-			feature: feature,
-			href: 'https://jetpack.com/redirect/?source=plans-compare-personal&site=' + siteRawUrl
-		};
 
-		switch( feature ) {
+		switch ( feature ) {
 			case FEATURE_VIDEO_HOSTING_JETPACK:
 				if (
 					'is-premium-plan' === planClass
@@ -131,9 +120,14 @@ export const SettingsCard = props => {
 		}
 	};
 
+	if ( ! header && props.module ) {
+		header = props.module.name;
+	}
+
 	return (
 		<form className="jp-form-settings-card">
 			<SectionHeader label={ header }>
+				{ props.notice }
 				{
 					! props.hideButton && (
 						<Button
@@ -152,9 +146,30 @@ export const SettingsCard = props => {
 				}
 			</SectionHeader>
 			{ props.children }
-			{ getBanner( feature ) }
+			{ getBanner( props.feature, props.siteRawUrl ) }
 		</form>
 	);
+};
+
+SettingsCard.propTypes = {
+	module: React.PropTypes.object,
+	header: React.PropTypes.string,
+	feature: React.PropTypes.string,
+	notice: React.PropTypes.element,
+	hideButton: React.PropTypes.bool,
+	isSavingAnyOption: React.PropTypes.func.isRequired,
+	isDirty: React.PropTypes.func,
+	onSubmit: React.PropTypes.func
+};
+
+SettingsCard.defaultProps = {
+	module: null,
+	header: '',
+	feature: false,
+	notice: null,
+	hideButton: false,
+	isDirty: () => false,
+	onSubmit: () => {}
 };
 
 export default connect(
