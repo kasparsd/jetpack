@@ -51,8 +51,8 @@ const PostByEmail = moduleSettingsForm(
 
 			return (
 				<SettingsCard
-					{ ...this.props }
-					module="post-by-email"
+					isSavingAnyOption={ this.props.isSavingAnyOption }
+					module={ postByEmail }
 					hideButton>
 					<SettingsGroup hasChild disableInDevMode module={ postByEmail }>
 						<ModuleToggle

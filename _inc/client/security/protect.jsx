@@ -66,8 +66,7 @@ export const Protect = moduleSettingsForm(
 				unavailableInDevMode = this.props.isUnavailableInDevMode( 'protect' );
 			return (
 				<SettingsCard
-					{ ...this.props }
-					module="protect"
+					isSavingAnyOption={ this.props.isSavingAnyOption }
 					header={ __( 'Prevent brute force login attacks', { context: 'Settings header' } ) } >
 					<SettingsGroup hasChild disableInDevMode module={ this.props.getModule( 'protect' ) }>
 						<ModuleToggle

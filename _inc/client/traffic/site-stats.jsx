@@ -86,10 +86,9 @@ export const SiteStats = moduleSettingsForm(
 				siteRoles = this.props.getSiteRoles();
 			return (
 				<SettingsCard
-					{ ...this.props }
+					isSavingAnyOption={ this.props.isSavingAnyOption }
 					hideButton
-					header={ __( 'Site stats' ) }
-					module="stats">
+					header={ __( 'Site stats' ) }>
 					<SettingsGroup disableInDevMode module={ stats }>
 						<FormFieldset>
 							<ModuleToggle
