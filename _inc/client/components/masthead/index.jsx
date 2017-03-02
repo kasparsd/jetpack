@@ -22,7 +22,7 @@ export const Masthead = React.createClass( {
 	},
 
 	render: function() {
-		let devNotice = this.props.siteConnectionStatus === 'dev'
+		const devNotice = this.props.siteConnectionStatus === 'dev'
 			? <code>Dev Mode</code>
 			: '',
 			isDashboardView = includes( [ '/', '/dashboard', '/apps', '/plans' ], this.props.route.path ),
@@ -40,6 +40,7 @@ export const Masthead = React.createClass( {
 						{ devNotice }
 					</div>
 					<div className="jp-masthead__nav">
+						{ ( ! isStatic && this.props.siteConnectionStatus ) &&
 							<ButtonGroup>
 								<Button
 									compact={ true }
@@ -56,10 +57,11 @@ export const Masthead = React.createClass( {
 									{ __( 'Settings' ) }
 								</Button>
 							</ButtonGroup>
+						}
 					</div>
 				</div>
 			</div>
-		)
+		);
 	}
 } );
 
