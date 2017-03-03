@@ -139,12 +139,6 @@ const Main = React.createClass( {
 	},
 
 	renderMainContent: function( route ) {
-		if ( '/search' === route && false === this.props.searchTerm ) {
-			window.location.hash = 'settings';
-			const history = createHistory();
-			history.push( window.location.pathname + '?page=jetpack#/settings' );
-		}
-
 		// Track page views
 		analytics.tracks.recordEvent( 'jetpack_wpa_page_view', { path: route } );
 
@@ -189,7 +183,6 @@ const Main = React.createClass( {
 			case '/traffic':
 			case '/discussion':
 			case '/writing':
-			case '/search':
 				navComponent = settingsNav;
 				pageComponent = <SearchableSettings
 					route={ this.props.route }
@@ -265,8 +258,7 @@ window.wpNavMenuClassChange = function() {
 		'#/discussion',
 		'#/security',
 		'#/traffic',
-		'#/writing',
-		'#/search'
+		'#/writing'
 	],
 	dashboardRoutes = [
 		'#/',
