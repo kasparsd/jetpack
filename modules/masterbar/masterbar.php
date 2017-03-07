@@ -166,6 +166,7 @@ class A8C_WPCOM_Masterbar {
 
 	public function add_reader_submenu( $wp_admin_bar ) {
 		$wp_admin_bar->add_menu( array(
+			'parent' => 'root-default',
 			'id'    => 'newdash',
 			'title' => __( 'Reader', 'jetpack' ),
 			'href'  => 'https://wordpress.com/',
@@ -261,11 +262,10 @@ class A8C_WPCOM_Masterbar {
 	}
 
 	public function wpcom_adminbar_add_secondary_groups( $wp_admin_bar ) {
-		$class = 'ab-top-secondary';
 		$wp_admin_bar->add_group( array(
-			'id'     => 'top-secondary',
+			'id'     => 'root-default',
 			'meta'   => array(
-				'class' => $class,
+				'class' => 'ab-top-menu',
 			),
 		) );
 
@@ -274,6 +274,13 @@ class A8C_WPCOM_Masterbar {
 			'id'     => 'blog-secondary',
 			'meta'   => array(
 				'class' => 'ab-sub-secondary',
+			),
+		) );
+
+		$wp_admin_bar->add_group( array(
+			'id'     => 'top-secondary',
+			'meta'   => array(
+				'class' => 'ab-top-secondary',
 			),
 		) );
 	}
@@ -473,6 +480,7 @@ class A8C_WPCOM_Masterbar {
 		}
 
 		$wp_admin_bar->add_menu( array(
+			'parent' => 'root-default',
 			'id'    => 'blog',
 			'title' => __( 'My Sites', 'jetpack' ),
 			'href'  => 'https://wordpress.com/stats/' . esc_attr( $this->primary_site_slug ),
