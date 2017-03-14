@@ -1149,16 +1149,16 @@ class Share_GooglePlus1 extends Sharing_Source {
 					}
 
 					jQuery( '.g-plus' ).each(function() {
-						var $button = jQuery( this );
+						var \$button = jQuery( this );
 
-						if ( ! $button.data( 'gplus-rendered' ) ) {
+						if ( ! \$button.data( 'gplus-rendered' ) ) {
 							gapi.plusone.render( this, {
-								href: $button.attr( 'data-href' ),
-								size: $button.attr( 'data-size' ),
-								annotation: $button.attr( 'data-annotation' )
+								href: \$button.attr( 'data-href' ),
+								size: \$button.attr( 'data-size' ),
+								annotation: \$button.attr( 'data-annotation' )
 							});
 
-							$button.data( 'gplus-rendered', true );
+							\$button.data( 'gplus-rendered', true );
 						}
 					});
 				}
