@@ -1602,11 +1602,13 @@ class Share_Pocket extends Sharing_Source {
 
 	public function get_display( $post ) {
 		if ( $this->smart ) {
-			$post_count = 'horizontal';
-
 			$button = '';
 			$button .= '<div class="pocket_button">';
-			$button .= sprintf( '<a href="https://getpocket.com/save" class="pocket-btn" data-lang="%s" data-save-url="%s" data-pocket-count="%s" >%s</a>', 'en', esc_attr( $this->get_share_url( $post->ID ) ), $post_count, esc_attr__( 'Pocket', 'jetpack' ) );
+			$button .= sprintf(
+				'<a href="https://getpocket.com/save" class="pocket-btn" data-lang="en" data-save-url="%s" data-pocket-count="horizontal">%s</a>',
+				esc_attr( $this->get_share_url( $post->ID ) ),
+				esc_attr__( 'Pocket', 'jetpack' )
+			);
 			$button .= '</div>';
 
 			return $button;
