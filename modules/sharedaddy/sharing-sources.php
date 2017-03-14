@@ -340,21 +340,18 @@ abstract class Sharing_Source {
 		foreach ( $params as $key => $val ) {
 			$opts[] = "$key=$val";
 		}
-		$opts = implode( ',', $opts );
+
+		$dialog_settings = array(
+			'name' => $name,
+			'windowOpts' => implode( ',', $opts ),
+		);
 
 		// Add JS after sharing-js has been enqueued.
 		wp_add_inline_script( 'sharing-js',
-			"
-			var windowOpen;
-			jQuery( document.body ).on( 'click', 'a.share-$name', function() {
-				// If there's another sharing window open, close it.
-				if ( 'undefined' !== typeof windowOpen ) {
-					windowOpen.close();
-				}
-				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcom$name', '$opts' );
-				return false;
-			});
-			"
+			sprintf(
+				"jQuery( document ).trigger( 'jetpack-sharing-window-init', [ %s ] );",
+				wp_json_encode( $dialog_settings )
+			)
 		);
 	}
 }
