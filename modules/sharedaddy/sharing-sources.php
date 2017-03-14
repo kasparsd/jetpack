@@ -1567,28 +1567,8 @@ class Share_Pinterest extends Sharing_Source {
 				jQuery(window).load( function(){ jQuery( 'li.share-pinterest a span:visible' ).closest( '.share-pinterest' ).width( '80px' ); } );
 				"
 			);
-		elseif ( 'buttonPin' != $this->get_widget_type() ) :
-			wp_add_inline_script( 'sharing-js',
-				"
-				jQuery(document).ready( function(){
-					jQuery('body').on('click', 'a.share-pinterest', function(e){
-						e.preventDefault();
-						// Load Pinterest Bookmarklet code
-						var s = document.createElement('script');
-						s.type = 'text/javascript';
-						s.src = window.location.protocol + '//assets.pinterest.com/js/pinmarklet.js?r=' + ( Math.random() * 99999999 );
-						var x = document.getElementsByTagName('script')[0];
-						x.parentNode.insertBefore(s, x);
-						// Trigger Stats
-						var s = document.createElement('script');
-						s.type = 'text/javascript';
-						s.src = this + ( this.toString().indexOf( '?' ) ? '&' : '?' ) + 'js_only=1';
-						var x = document.getElementsByTagName('script')[0];
-						x.parentNode.insertBefore(s, x);
-					});
-				});
-				"
-			);
+		else :
+			$this->js_dialog( $this->shortname, array( 'width' => 750, 'height' => 620 ) );
 		endif;
 	}
 }
