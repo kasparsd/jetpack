@@ -985,16 +985,22 @@ class Share_Facebook extends Sharing_Source {
 			} else {
 				$fb_app_id = '';
 			}
-			?><div id="fb-root"></div>
-			<script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = 'https://connect.facebook.net/<?php echo $locale; ?>/sdk.js#xfbml=1<?php echo $fb_app_id; ?>&version=v2.3'; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));</script>
-			<script>
-			jQuery( document.body ).on( 'post-load', function() {
-				if ( 'undefined' !== typeof FB ) {
-					FB.XFBML.parse();
-				}
-			} );
-			</script>
-			<?php
+
+			echo '<div id="fb-root"></div>';
+
+			wp_add_inline_script( 'sharing-js',
+				"
+				(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = 'https://connect.facebook.net/$locale/sdk.js#xfbml=1$fb_app_id&version=v2.3'; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));
+				jQuery( document.body ).on( 'post-load', function() {
+					if ( 'undefined' !== typeof FB ) {
+						FB.XFBML.parse();
+					}
+				} );
+				"
+			);
+
+		} else {
+			$this->js_dialog( $this->shortname );
 		}
 	}
 }
@@ -1007,7 +1013,7 @@ class Share_Print extends Sharing_Source {
 
 		if ( 'official' == $this->button_style ) {
 			$this->smart = true;
-		} else { 
+		} else {
 			$this->smart = false;
 		}
 	}
