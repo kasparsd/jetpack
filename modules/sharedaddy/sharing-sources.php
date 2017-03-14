@@ -344,7 +344,8 @@ abstract class Sharing_Source {
 
 		// Add JS after sharing-js has been enqueued.
 		wp_add_inline_script( 'sharing-js',
-			"var windowOpen;
+			"
+			var windowOpen;
 			jQuery( document.body ).on( 'click', 'a.share-$name', function() {
 				// If there's another sharing window open, close it.
 				if ( 'undefined' !== typeof windowOpen ) {
@@ -352,7 +353,8 @@ abstract class Sharing_Source {
 				}
 				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcom$name', '$opts' );
 				return false;
-			});"
+			});
+			"
 		);
 	}
 }
@@ -1138,39 +1140,40 @@ class Share_GooglePlus1 extends Sharing_Source {
 	public function display_footer() {
 		global $post;
 
-		if ( $this->smart ) { ?>
-			<script>
-			function renderGooglePlus1() {
-				if ( 'undefined' === typeof gapi ) {
-					return;
+		if ( $this->smart ) {
+			wp_add_inline_script( 'sharing-js',
+				"
+				function renderGooglePlus1() {
+					if ( 'undefined' === typeof gapi ) {
+						return;
+					}
+
+					jQuery( '.g-plus' ).each(function() {
+						var $button = jQuery( this );
+
+						if ( ! $button.data( 'gplus-rendered' ) ) {
+							gapi.plusone.render( this, {
+								href: $button.attr( 'data-href' ),
+								size: $button.attr( 'data-size' ),
+								annotation: $button.attr( 'data-annotation' )
+							});
+
+							$button.data( 'gplus-rendered', true );
+						}
+					});
 				}
 
-				jQuery( '.g-plus' ).each(function() {
-					var $button = jQuery( this );
+				(function() {
+					var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+					po.src = 'https://apis.google.com/js/plusone.js';
+					po.innerHTML = '{\"parsetags\": \"explicit\"}';
+					po.onload = renderGooglePlus1;
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+				})();
 
-					if ( ! $button.data( 'gplus-rendered' ) ) {
-						gapi.plusone.render( this, {
-							href: $button.attr( 'data-href' ),
-							size: $button.attr( 'data-size' ),
-							annotation: $button.attr( 'data-annotation' )
-						});
-
-						$button.data( 'gplus-rendered', true );
-					}
-				});
-			}
-
-			(function() {
-				var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-				po.src = 'https://apis.google.com/js/plusone.js';
-				po.innerHTML = '{"parsetags": "explicit"}';
-				po.onload = renderGooglePlus1;
-				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-			})();
-
-			jQuery( document.body ).on( 'post-load', renderGooglePlus1 );
-			</script>
-			<?php
+				jQuery( document.body ).on( 'post-load', renderGooglePlus1 );
+				"
+			);
 		} else {
 			$this->js_dialog( 'google-plus-1', array( 'width' => 480, 'height' => 550 ) );
 		}
@@ -1545,43 +1548,51 @@ class Share_Pinterest extends Sharing_Source {
 		 * @param bool $jetpack_pinit_over True by default, displays the Pin it button when hovering over images.
 		 */
 		$jetpack_pinit_over = apply_filters( 'jetpack_pinit_over_button', true );
-		?>
-		<?php if ( $this->smart ) : ?>
-			<script type="text/javascript">
+
+		if ( $jetpack_pinit_over ) {
+			$jetpack_pinit_over_js = 's.setAttribute("data-pin-hover", true);';
+		} else {
+			$jetpack_pinit_over_js = '';
+		}
+
+		if ( $this->smart ) :
+			wp_add_inline_script( 'sharing-js',
+				"
 				// Pinterest shared resources
-				var s = document.createElement("script");
-				s.type = "text/javascript";
+				var s = document.createElement('script');
+				s.type = 'text/javascript';
 				s.async = true;
-				<?php if ( $jetpack_pinit_over ) { 
-				echo "s.setAttribute('data-pin-hover', true);";
-				} ?>
-				s.src = window.location.protocol + "//assets.pinterest.com/js/pinit.js";
-				var x = document.getElementsByTagName("script")[0];
+				$jetpack_pinit_over_js
+				s.src = window.location.protocol + '//assets.pinterest.com/js/pinit.js';
+				var x = document.getElementsByTagName('script')[0];
 				x.parentNode.insertBefore(s, x);
 				// if 'Pin it' button has 'counts' make container wider
 				jQuery(window).load( function(){ jQuery( 'li.share-pinterest a span:visible' ).closest( '.share-pinterest' ).width( '80px' ); } );
-			</script>
-		<?php elseif ( 'buttonPin' != $this->get_widget_type() ) : ?>
-			<script type="text/javascript">
+				"
+			);
+		elseif ( 'buttonPin' != $this->get_widget_type() ) :
+			wp_add_inline_script( 'sharing-js',
+				"
 				jQuery(document).ready( function(){
 					jQuery('body').on('click', 'a.share-pinterest', function(e){
 						e.preventDefault();
 						// Load Pinterest Bookmarklet code
-						var s = document.createElement("script");
-						s.type = "text/javascript";
-						s.src = window.location.protocol + "//assets.pinterest.com/js/pinmarklet.js?r=" + ( Math.random() * 99999999 );
-						var x = document.getElementsByTagName("script")[0];
+						var s = document.createElement('script');
+						s.type = 'text/javascript';
+						s.src = window.location.protocol + '//assets.pinterest.com/js/pinmarklet.js?r=' + ( Math.random() * 99999999 );
+						var x = document.getElementsByTagName('script')[0];
 						x.parentNode.insertBefore(s, x);
 						// Trigger Stats
-						var s = document.createElement("script");
-						s.type = "text/javascript";
+						var s = document.createElement('script');
+						s.type = 'text/javascript';
 						s.src = this + ( this.toString().indexOf( '?' ) ? '&' : '?' ) + 'js_only=1';
-						var x = document.getElementsByTagName("script")[0];
+						var x = document.getElementsByTagName('script')[0];
 						x.parentNode.insertBefore(s, x);
 					});
 				});
-			</script>
-		<?php endif;
+				"
+			);
+		endif;
 	}
 }
 
@@ -1594,7 +1605,7 @@ class Share_Pocket extends Sharing_Source {
 
 		if ( 'official' == $this->button_style ) {
 			$this->smart = true;
-		} else { 
+		} else {
 			$this->smart = false;
 		}
 	}
@@ -1630,16 +1641,16 @@ class Share_Pocket extends Sharing_Source {
 
 	function display_footer() {
 		if ( $this->smart ) :
-		?>
-		<script>
-		// Don't use Pocket's default JS as it we need to force init new Pocket share buttons loaded via JS.
-		function jetpack_sharing_pocket_init() {
-			jQuery.getScript( 'https://widgets.getpocket.com/v1/j/btn.js?v=1' );
-		}
-		jQuery( document ).ready( jetpack_sharing_pocket_init );
-		jQuery( document.body ).on( 'post-load', jetpack_sharing_pocket_init );
-		</script>
-		<?php
+			wp_add_inline_script( 'sharing-js',
+				"
+				// Don't use Pocket's default JS as it we need to force init new Pocket share buttons loaded via JS.
+				function jetpack_sharing_pocket_init() {
+					jQuery.getScript( 'https://widgets.getpocket.com/v1/j/btn.js?v=1' );
+				}
+				jQuery( document ).ready( jetpack_sharing_pocket_init );
+				jQuery( document.body ).on( 'post-load', jetpack_sharing_pocket_init );
+				"
+			);
 		else :
 			$this->js_dialog( $this->shortname, array( 'width' => 450, 'height' => 450 ) );
 		endif;
