@@ -844,20 +844,22 @@ class Share_LinkedIn extends Sharing_Source {
 	}
 
 	public function display_footer() {
-		if ( ! $this->smart ) {
-			$this->js_dialog( $this->shortname, array( 'width' => 580, 'height' => 450 ) );
-		} else {
-			?><script type="text/javascript">
-			jQuery( document ).ready( function() {
-				jQuery.getScript( 'https://platform.linkedin.com/in.js?async=true', function success() {
-					IN.init();
+		if ( $this->smart ) {
+			wp_add_inline_script( 'sharing-js',
+				"
+				jQuery( document ).ready( function() {
+					jQuery.getScript( 'https://platform.linkedin.com/in.js?async=true', function success() {
+						IN.init();
+					});
 				});
-			});
-			jQuery( document.body ).on( 'post-load', function() {
-				if ( typeof IN != 'undefined' )
-					IN.parse();
-			});
-			</script><?php
+				jQuery( document.body ).on( 'post-load', function() {
+					if ( typeof IN != 'undefined' )
+						IN.parse();
+				});
+				"
+			);
+		} else {
+			$this->js_dialog( $this->shortname, array( 'width' => 580, 'height' => 450 ) );
 		}
 	}
 }
