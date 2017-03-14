@@ -1547,7 +1547,7 @@ class Share_Pinterest extends Sharing_Source {
 		$jetpack_pinit_over = apply_filters( 'jetpack_pinit_over_button', true );
 
 		if ( $jetpack_pinit_over ) {
-			$jetpack_pinit_over_js = 's.setAttribute("data-pin-hover", true);';
+			$jetpack_pinit_over_js = "s.setAttribute( 'data-pin-hover', true );";
 		} else {
 			$jetpack_pinit_over_js = '';
 		}
